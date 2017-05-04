@@ -1,4 +1,5 @@
 import numpy as np
+from string import punctuation
 import tensorflow as tf
 
 
@@ -7,10 +8,19 @@ def read_file(file_path):
     return file.read()
 
 
+def cleanup_reviews(reviews):
+    reviews = ''.join(
+        [char for char in reviews if char not in punctuation]
+    )
+    reviews = reviews.split('\n')
+    return ' '.join(reviews)
+
+
 def main():
-    reviews = read_file('reviews.txt')
+    reviews = cleanup_reviews(read_file('reviews.txt'))
     labels = read_file('labels.txt')
-    print labels
+    print reviews[:2000]
+
 
 
 if __name__ == '__main__':
