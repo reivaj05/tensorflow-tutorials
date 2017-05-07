@@ -43,6 +43,15 @@ def main():
     # # Create reviews sequences
     reviews_sequences = create_reviews_sequences(reviews, vocab_to_int)
 
+    # # Encoding labels positive/negative (Cast them to 0 and 1)
+
+    labels = labels.split('\n')
+    labels = np.array([1 if label == 'positive' else 0 for label in labels])
+
+    # # Remove zero length reviews/labels
+    non_zero_idx = [index for index, review in enumerate(reviews_sequences)if len(review) != 0]
+    reviews_sequences = [reviews_sequences[index] for index in non_zero_idx]
+    labels = np.array([labels[index] for index in non_zero_idx])
 
 if __name__ == '__main__':
     main()
