@@ -53,5 +53,13 @@ def main():
     reviews_sequences = [reviews_sequences[index] for index in non_zero_idx]
     labels = np.array([labels[index] for index in non_zero_idx])
 
+    # # Create sequences with only first 200 words per review
+    sequnce_size = 200
+    sequences = np.zeros((len(reviews_sequences), sequnce_size), dtype=int)
+    for i, review in enumerate(reviews_sequences):
+        sequences[i, -len(review):] = np.array(review)[:sequnce_size]
+
+    
+
 if __name__ == '__main__':
     main()
