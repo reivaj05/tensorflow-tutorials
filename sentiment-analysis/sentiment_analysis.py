@@ -93,8 +93,17 @@ def main():
     embedding_size = 300
     with graph.as_default():
         embedding = tf.Variable(
-            tf.random_uniform(num_words, embedding_size), -1, 1)
+            tf.random_uniform((num_words, embedding_size), -1, 1))
         embed = tf.nn.embedding_lookup(embedding, _inputs)
+
+    # # Create lstm cell
+
+    with graph.as_default():
+        lstm = tf.contrib.rnn.BasicLSTMCell(num_units)
+        drop = tf.contrib.rnn.DropoutWrapper(lstm, output_keep_prob=keep_prob)
+        cell = tf.contrib.rnn.MultiRNNCell([drop] * lstm_layers)
+
+        initial_state = cell.zero_state(batch_size, tf.float32)
 
 
 if __name__ == '__main__':
