@@ -75,6 +75,21 @@ def main():
     testing_target = validation_target[testing_index:]
     validation_target = validation_target[:testing_index]
 
+    # # Build graph
+    # Hyperparameters
+    num_units = 256
+    lstm_layers = 1
+    batch_size = 500
+    learning_rate = 0.001
+
+    num_words = len(vocab_to_int)
+    graph = tf.Graph()
+    with graph.as_default():
+        _inputs = tf.placeholder(tf.int32, [None, None], name='inputs')
+        _targets = tf.placeholder(tf.int32, [None, None], name='targets')
+        keep_prob = tf.placeholder(tf.float32, name='keep_prob')
+
+    
 
 if __name__ == '__main__':
     main()
