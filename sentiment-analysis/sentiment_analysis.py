@@ -89,7 +89,13 @@ def main():
         _targets = tf.placeholder(tf.int32, [None, None], name='targets')
         keep_prob = tf.placeholder(tf.float32, name='keep_prob')
 
-    
+    # # Embedding
+    embedding_size = 300
+    with graph.as_default():
+        embedding = tf.Variable(
+            tf.random_uniform(num_words, embedding_size), -1, 1)
+        embed = tf.nn.embedding_lookup(embedding, _inputs)
+
 
 if __name__ == '__main__':
     main()
