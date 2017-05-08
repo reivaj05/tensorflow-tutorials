@@ -59,7 +59,22 @@ def main():
     for i, review in enumerate(reviews_sequences):
         sequences[i, -len(review):] = np.array(review)[:sequnce_size]
 
-    
+    # # Split, validation and test
+    split_fraction = 0.8
+    split_index = int(len(sequences) * split_fraction)
+
+    training_input = sequences[:split_index]
+    validation_input = sequences[split_index:]
+
+    training_target = labels[:split_index]
+    validation_target = labels[split_index:]
+
+    testing_index = int(len(validation_input) * 0.5)
+    testing_input = validation_input[testing_index:]
+    validation_input = validation_input[:testing_index]
+    testing_target = validation_target[testing_index:]
+    validation_target = validation_target[:testing_index]
+
 
 if __name__ == '__main__':
     main()
