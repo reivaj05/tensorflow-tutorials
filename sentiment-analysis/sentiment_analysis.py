@@ -131,10 +131,54 @@ def main():
 
     # # Validation accuracy
 
-    with grap.as_default():
+    with graph.as_default():
         expected_prediction = tf.equal(
             tf.cast(tf.round(predictions), tf.int32), _targets)
         accuracy = tf.reduce_mean(tf.cast(expected_prediction, tf.float32))
+
+    # # Training
+
+    epochs = 1
+    with graph.as_default():
+        saver = tf.train.Saver()
+
+    with tf.Session(graph=graph) as session:
+        session.run(tf.global_variables_initializer())
+        iteration = 1
+        for epoch in range(epochs):
+            state = session.run(initial_state)
+            for i, (x, y) in enumerate(get_batches(training_input, training_target, batch_size), 1):
+                feed_dict = {
+                    _targets: y[:, None],
+                    _inputs: x,
+                    keep_prob: 0.5,
+                    initial_state: state
+                }
+                loss, state, _ = session.run(
+                    [error, final_state, optimizer], feed_dict=feed_dict)
+
+                if iteration % 5 == 0:
+                    print("Epoch: {}/{}".format(epoch, epochs),
+                          "Iteration: {}".format(iteration),
+                          "Train loss: {:.3f}".format(loss))
+
+                if iteration % 25 == 0:
+                    val_acc = []
+                    val_state = session.run(
+                        cell.zero_state(batch_size, tf.float32))
+                    for x, y in get_batches(validation_input, validation_target, batch_size):
+                        feed_dict = {
+                            _inputs: x,
+                            _targets: y[:, None],
+                            keep_prob: 1,
+                            initial_state: val_state
+                        }
+                        batch_acc, val_state = session.run(
+                            [accuracy, final_state], feed_dict=feed_dict)
+                        val_acc.append(batch_acc)
+                    print("Val acc: {:.3f}".format(np.mean(val_acc)))
+                iteration += 1
+        saver.save(session, 'checkpoints/sentiment.ckpt')
 
 
 if __name__ == '__main__':
