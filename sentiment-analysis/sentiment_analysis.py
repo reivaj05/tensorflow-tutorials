@@ -138,7 +138,7 @@ def main():
 
     # # Training
 
-    epochs = 1
+    epochs = 10
     with graph.as_default():
         saver = tf.train.Saver()
 
@@ -179,6 +179,24 @@ def main():
                     print("Val acc: {:.3f}".format(np.mean(val_acc)))
                 iteration += 1
         saver.save(session, 'checkpoints/sentiment.ckpt')
+
+    # # Testing
+
+    test_acc = []
+    with tf.Session(graph=graph) as session:
+        saver.restore(session, tf.train.latest_checkpoint('checkpoints'))
+        test_state = session.run(cell.zero_state(batch_size, tf.float32))
+        for i, (x, y) in enumerate(get_batches(testing_input, testing_target, batch_size), 1):
+            feed_dict = {
+                _inputs: x,
+                _targets: y[:, None],
+                keep_prob: 1,
+                initial_state: test_state
+            }
+            batch_acc, test_state = session.run(
+                [accuracy, final_state], feed_dict=feed_dict)
+            test_acc.append(batch_acc)
+        print('Test accuracy: {:.3f}'.format(np.mean(test_acc)))
 
 
 if __name__ == '__main__':
