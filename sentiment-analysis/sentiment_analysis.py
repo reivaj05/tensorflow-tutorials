@@ -122,6 +122,13 @@ def main():
         error = tf.losses.mean_squared_error(_targets, predictions)
         optimizer = tf.train.AdamOptimizer(learning_rate).minimize(error)
 
+    # # Validation accuracy
+
+    with grap.as_default():
+        expected_prediction = tf.equal(
+            tf.cast(tf.round(predictions), tf.int32), _targets)
+        accuracy = tf.reduce_mean(tf.cast(expected_prediction, tf.float32))
+
 
 if __name__ == '__main__':
     main()
