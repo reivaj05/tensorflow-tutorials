@@ -105,6 +105,23 @@ def main():
 
         initial_state = cell.zero_state(batch_size, tf.float32)
 
+    # # Forwarding
+
+    with graph.as_default():
+        outputs, final_state = tf.nn.dynamic_rnn(
+            cell, embed, initial_state=initial_state)
+
+    # # Output. Fully connected layer
+
+    with graph.as_default():
+        predictions = tf.contrib.layers.fully_connected(
+            outputs[:, -1],
+            1,
+            activation_fn=tf.sigmoid
+        )
+        error = tf.losses.mean_squared_error(_targets, predictions)
+        optimizer = tf.train.AdamOptimizer(learning_rate).minimize(error)
+
 
 if __name__ == '__main__':
     main()
