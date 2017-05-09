@@ -4,6 +4,13 @@ from string import punctuation
 import tensorflow as tf
 
 
+def get_batches(x, y, batch_size=100):
+    num_batches = len(x) // batch_size
+    x, y = x[:num_batches * batch_size], y[:num_batches * batch_size]
+    for i in range(0, len(x), batch_size):
+        yield x[i: i + batch_size], y[i: i + batch_size]
+
+
 def read_file(file_path):
     file = open(file_path, 'r')
     return file.read()
