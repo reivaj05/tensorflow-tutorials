@@ -92,3 +92,4 @@ ENV/
 # Project
 
 MNIST_data
+checkpoints
