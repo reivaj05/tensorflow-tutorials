@@ -94,3 +94,4 @@ ENV/
 MNIST_data
 checkpoints
 *pkl
+data
