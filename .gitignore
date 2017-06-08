@@ -95,3 +95,5 @@ MNIST_data
 checkpoints
 *pkl
 data
+styles
+images
